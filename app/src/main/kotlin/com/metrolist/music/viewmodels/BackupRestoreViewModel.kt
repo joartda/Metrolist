@@ -24,6 +24,9 @@ import com.metrolist.music.extensions.zipOutputStream
 import com.metrolist.music.playback.MusicService
 import com.metrolist.music.playback.MusicService.Companion.PERSISTENT_QUEUE_FILE
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.constants.VisitorDataKey
+import com.metrolist.music.utils.dataStore
+import androidx.datastore.preferences.core.edit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -107,6 +110,15 @@ class BackupRestoreViewModel @Inject constructor(
                 }
             } ?: run {
                 Timber.tag("RESTORE").e("Could not open input stream for uri: $uri")
+            }
+
+            // Clear visitorData to force getting a fresh one on restart
+            // This fixes 403 errors caused by expired/invalid visitorData from old backups
+            Timber.tag("RESTORE").i("Clearing visitorData to force refresh on restart")
+            runBlocking(Dispatchers.IO) {
+                context.dataStore.edit { settings ->
+                    settings.remove(VisitorDataKey)
+                }
             }
 
             context.stopService(Intent(context, MusicService::class.java))
