@@ -1,16 +1,17 @@
 name: Quick Test Build
 
 on:
-  workflow_dispatch:
-  push:
-    branches: ["**"]
-    paths-ignore:
-      - "README.md"
-      - "fastlane/**"
-      - "assets/**"
-      - ".github/**/*.md"
-      - ".github/FUNDING.yml"
-      - ".github/ISSUE_TEMPLATE/**"
+  workflow_dispatch: # 수동 실행만 가능
+  # push 이벤트 비활성화 - build_arm64.yml 사용
+  # push:
+  #   branches: ["**"]
+  #   paths-ignore:
+  #     - "README.md"
+  #     - "fastlane/**"
+  #     - "assets/**"
+  #     - ".github/**/*.md"
+  #     - ".github/FUNDING.yml"
+  #     - ".github/ISSUE_TEMPLATE/**"
 
 permissions:
   contents: write
