@@ -22,7 +22,7 @@ permissions:
 jobs:
   build_arm64:
     name: Build arm64 APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     steps:
       - uses: actions/checkout@v6
@@ -43,9 +43,10 @@ jobs:
         run: chmod +x gradlew
       
       - name: Build arm64 Release APK (FOSS variant)
-        run: ./gradlew --console=plain assembleArm64FossRelease --warning-mode summary
+        run: ./gradlew --console=plain assembleArm64FossRelease --warning-mode summary --parallel --daemon -Dorg.gradle.jvmargs="-Xmx2048m -XX:+UseG1GC"
         env:
           PULL_REQUEST: "false"
+          GRADLE_OPTS: "-Xmx2048m -XX:+UseG1GC"
       
       - name: Find APK
         run: |
