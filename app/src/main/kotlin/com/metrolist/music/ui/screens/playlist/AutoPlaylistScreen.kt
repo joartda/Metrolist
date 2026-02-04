@@ -214,7 +214,9 @@ fun AutoPlaylistScreen(
     }
     
     LaunchedEffect(Unit) {
-        if (ytmSync) {
+        // ⚠️ AUTO SYNC DISABLED - Prevents backup restore sync issues
+        // This prevents automatic sync of liked songs which was deleting restored content
+        if (false) { // ytmSync disabled
             withContext(Dispatchers.IO) {
                 if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
                 // Uploaded feature is temporarily disabled

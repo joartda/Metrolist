@@ -215,6 +215,13 @@ class SyncUtils @Inject constructor(
     }
 
     fun tryAutoSync() {
+        // ⚠️ AUTO SYNC DISABLED - Prevents backup restore sync issues
+        Timber.d("tryAutoSync: AUTO SYNC DISABLED to prevent sync issues on restore")
+        // Auto sync functionality has been disabled to prevent automatic
+        // synchronization that was deleting restored backup content
+        return
+        
+        /*
         syncScope.launch {
             if (!isLoggedIn()) {
                 Timber.d("Skipping auto sync - user not logged in")
@@ -237,6 +244,7 @@ class SyncUtils @Inject constructor(
                 settings[LastFullSyncKey] = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
             }
         }
+        */
     }
 
     fun runAllSyncs() {
