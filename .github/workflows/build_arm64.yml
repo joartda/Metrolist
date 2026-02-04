@@ -1,0 +1,55 @@
+name: Build arm64 APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "app/src/**"
+      - "app/build.gradle.kts"
+      - ".github/workflows/build_arm64.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build_arm64:
+    name: Build arm64 APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v6
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+      
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_CACHE_KEY }}
+          cache-cleanup: on-success
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Build arm64 Release APK (FOSS variant)
+        run: ./gradlew --console=plain assembleArm64FossRelease --warning-mode summary
+        env:
+          PULL_REQUEST: "false"
+      
+      - name: Find APK
+        run: |
+          find . -name "*arm64*Release.apk" -type f
+          ls -lh app/build/outputs/apk/arm64Foss/release/
+      
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: app/build/outputs/apk/arm64Foss/release/*.apk
+          tag_name: arm64-build-${{ github.run_number }}
+          draft: false
+          prerelease: false
+        if: success()
