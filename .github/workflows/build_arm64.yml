@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: ["main"]
-    paths:
-      - "app/src/**"
-      - "app/build.gradle.kts"
-      - ".github/workflows/build_arm64.yml"
     # Ignore paths to prevent duplicate builds
     paths-ignore:
       - "README.md"
